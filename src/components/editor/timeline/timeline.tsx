@@ -46,7 +46,7 @@ export const Timeline = () => {
         }}
         x={pos}
         height={400}
-        width={10}
+        width={5}
         fill={COLOR}
       />
     </Layer>

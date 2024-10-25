@@ -65,7 +65,7 @@ export const FXButton = ({ x, y }: FXButtonProps) => {
         }}
         onDragEnd={(e) => {
           e.target.to({
-            y: Math.round(e.target.y() / GRID_HEIGHT) * GRID_HEIGHT,
+            y: Math.round(e.target.y() / (2 * GRID_HEIGHT)) * (2 * GRID_HEIGHT),
             x: Math.round(e.target.x() / GRID_WIDTH) * GRID_WIDTH,
             duration: 0,
           });
