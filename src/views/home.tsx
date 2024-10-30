@@ -2,8 +2,7 @@
 import { AudioBar } from "@/components/audio-bar/audio-bar";
 import { useAppContext } from "@/components/context/app-context";
 import { Lane } from "@/components/editor/lane/lane";
-import { Timeline } from "@/components/editor/timeline/timeline";
-import { Layer, Stage } from "react-konva";
+import { Layer, Rect, Stage } from "react-konva";
 import { GRID_WIDTH } from "../../constants";
 import { Toolbar } from "@/components/tool-bar/tool-bar";
 import { useLayoutEffect, useRef, useState } from "react";
@@ -75,6 +74,7 @@ export const Home = () => {
           />
           BPM
         </label>
+        {/* <GamepadConfig /> */}
       </div>
       <div ref={divRef} className="col-span-6">
         <Stage
@@ -84,15 +84,15 @@ export const Home = () => {
           rotation={-90}
           ref={stageRef}
           draggable
-          y={dimensions.height}
+          y={dimensions.height / 2}
           className="h-full w-full"
           width={dimensions.width}
           height={dimensions.height}
         >
           <Layer>
             <Lane length={SONG_LENGTH} />
+            <Rect height={400} width={5} fill={"red"} />
           </Layer>
-          <Timeline />
         </Stage>
       </div>
     </div>

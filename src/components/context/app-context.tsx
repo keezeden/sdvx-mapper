@@ -15,7 +15,7 @@ const AppContext = createContext<AppContextProps | undefined>(undefined);
 
 const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [appContext, setAppContext] = useState<AppContextType>({
-    bpm: 100,
+    bpm: 180,
     tool: "BT",
     sound: null,
   });

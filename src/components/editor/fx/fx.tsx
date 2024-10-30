@@ -2,7 +2,6 @@ import { Rect, Transformer } from "react-konva";
 import Konva from "konva";
 import { GRID_HEIGHT, GRID_WIDTH } from "../../../../constants";
 import { useEffect, useRef, useState } from "react";
-import { useAppContext } from "@/components/context/app-context";
 
 const COLOR = "orange";
 
@@ -11,9 +10,7 @@ type FXButtonProps = {
   y?: number;
 };
 
-export const FXButton = ({ x, y }: FXButtonProps) => {
-  const { bpm } = useAppContext();
-
+export const FXButton = ({ x = 0, y = 0 }: FXButtonProps) => {
   const rectRef = useRef<Konva.Rect>();
   const transformerRef = useRef<Konva.Transformer>();
 
@@ -39,8 +36,8 @@ export const FXButton = ({ x, y }: FXButtonProps) => {
         draggable
         height={GRID_HEIGHT * 2}
         width={GRID_WIDTH}
-        x={x}
-        y={y}
+        y={Math.round(y / GRID_HEIGHT) * GRID_HEIGHT}
+        x={Math.round(x / GRID_WIDTH) * GRID_WIDTH}
         fill={COLOR}
         onTransformEnd={(e) => {
           if (!rectRef.current) return;

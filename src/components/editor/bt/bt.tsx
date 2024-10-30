@@ -2,7 +2,6 @@ import { Rect, Transformer } from "react-konva";
 import Konva from "konva";
 import { GRID_HEIGHT, GRID_WIDTH } from "../../../../constants";
 import { useEffect, useRef, useState } from "react";
-import { useAppContext } from "@/components/context/app-context";
 
 const COLOR = "teal";
 
@@ -11,9 +10,7 @@ type BTButtonProps = {
   y?: number;
 };
 
-export const BTButton = ({ x, y }: BTButtonProps) => {
-  const { bpm } = useAppContext();
-
+export const BTButton = ({ x = 0, y = 0 }: BTButtonProps) => {
   const rectRef = useRef<Konva.Rect>();
   const transformerRef = useRef<Konva.Transformer>();
 
@@ -39,8 +36,8 @@ export const BTButton = ({ x, y }: BTButtonProps) => {
         draggable
         height={GRID_HEIGHT}
         width={GRID_WIDTH}
-        x={x}
-        y={y}
+        y={Math.round(y / GRID_HEIGHT) * GRID_HEIGHT}
+        x={Math.round(x / GRID_WIDTH) * GRID_WIDTH}
         fill={COLOR}
         onTransformEnd={(e) => {
           if (!rectRef.current) return;

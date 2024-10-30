@@ -1,11 +1,14 @@
 import { Group, Rect } from "react-konva";
 import { GRID_HEIGHT, GRID_WIDTH } from "../../../../constants";
 import { useAppContext } from "@/components/context/app-context";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BTButton } from "../bt/bt";
 import { FXButton } from "../fx/fx";
+import { useGamepad } from "@/hooks/gamepad";
 
 const COLOR = "grey";
+const POINTER_COLOR = "red";
+const UPDATE_RATE = 1000 / 60;
 
 type LaneProps = {
   length: number;
@@ -17,12 +20,60 @@ const componentMap = {
 };
 
 export const Lane = ({ length }: LaneProps) => {
-  const { tool } = useAppContext();
+  const { tool, sound, bpm } = useAppContext();
 
   const [children, setChildren] = useState<JSX.Element[]>([]);
 
+  const { gamepad } = useGamepad();
+
+  useEffect(() => {
+    if (!gamepad) return;
+    if (!sound) return;
+
+    const [start, bta, btb, btc, btd, fxl, fxr] = gamepad?.buttons;
+    const [ll, rl] = gamepad?.axes;
+
+    const press = (tool: "BT" | "FX", lane: number) => {
+      const seek = sound.seek();
+
+      const beatsPerSecond = bpm / 60;
+      const pos = seek * beatsPerSecond * GRID_WIDTH;
+
+      const Component = componentMap[tool as keyof typeof componentMap];
+      setChildren((c) => [...c, <Component x={pos} y={lane * GRID_HEIGHT} />]);
+    };
+
+    if (bta.pressed) press("BT", 0);
+    if (btb.pressed) press("BT", 1);
+    if (btc.pressed) press("BT", 2);
+    if (btd.pressed) press("BT", 3);
+
+    if (fxl.pressed) press("FX", 0);
+    if (fxr.pressed) press("FX", 2);
+  }, [gamepad]);
+
+  const [pos, setPos] = useState(0);
+
+  useEffect(() => {
+    if (!sound) return;
+
+    // NOTE: Is this bad?
+    const interval = setInterval(() => {
+      if (sound.playing()) {
+        const seek = sound.seek();
+
+        const beatsPerSecond = bpm / 60;
+        const pos = seek * beatsPerSecond * GRID_WIDTH;
+        setPos(pos);
+      }
+    }, UPDATE_RATE);
+
+    return () => clearInterval(interval);
+  }, [sound]);
+
   return (
     <Group
+      x={-pos}
       onClick={(evt) => {
         const isDoubleClick = evt.evt.detail === 2;
         if (!isDoubleClick) return;
