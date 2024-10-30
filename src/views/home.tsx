@@ -4,13 +4,28 @@ import { useAppContext } from "@/components/context/app-context";
 import { Lane } from "@/components/editor/lane/lane";
 import { Timeline } from "@/components/editor/timeline/timeline";
 import { Layer, Stage } from "react-konva";
-import { GRID_HEIGHT, GRID_WIDTH } from "../../constants";
+import { GRID_WIDTH } from "../../constants";
 import { Toolbar } from "@/components/tool-bar/tool-bar";
-import { useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import Konva from "konva";
 
 export const Home = () => {
   const { setAppContext, sound, bpm } = useAppContext();
+
+  const divRef = useRef<HTMLDivElement>(null);
+  const [dimensions, setDimensions] = useState({
+    width: 0,
+    height: 0,
+  });
+
+  useLayoutEffect(() => {
+    if (divRef.current?.offsetHeight && divRef.current?.offsetWidth) {
+      setDimensions({
+        width: divRef.current.offsetWidth,
+        height: divRef.current.offsetHeight,
+      });
+    }
+  }, []);
 
   const SONG_LENGTH = sound ? (sound?.duration() / 60) * bpm * GRID_WIDTH : 3000;
 
@@ -48,27 +63,31 @@ export const Home = () => {
 
   return (
     <div className="h-screen w-screen grid grid-cols-8">
-      <div className="col-span-2 flex flex-col gap-4 p-8">
+      <div className="col-span-2 flex flex-col gap-4 p-8 items-center justify-center border">
         <AudioBar />
         <Toolbar />
-        <input
-          type="number"
-          className="input input-bordered"
-          value={bpm}
-          onChange={(evt) => setAppContext({ bpm: parseInt(evt.target.value) })}
-        />
+        <label className="input input-bordered flex items-center gap-2">
+          <input
+            type="number"
+            className="grow"
+            value={bpm}
+            onChange={(evt) => setAppContext({ bpm: parseInt(evt.target.value) })}
+          />
+          BPM
+        </label>
       </div>
-      <div className="overflow-x-scroll col-span-6">
+      <div ref={divRef} className="col-span-6">
         <Stage
           onWheel={handleWheel}
           scaleX={scale.x}
           scaleY={scale.y}
+          rotation={-90}
           ref={stageRef}
           draggable
-          y={300}
+          y={dimensions.height}
           className="h-full w-full"
-          width={SONG_LENGTH + 400}
-          height={GRID_HEIGHT * 4 + 400}
+          width={dimensions.width}
+          height={dimensions.height}
         >
           <Layer>
             <Lane length={SONG_LENGTH} />

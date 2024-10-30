@@ -7,7 +7,7 @@ export const Toolbar = () => {
   const selectedClasses = (name: string) => (name === tool ? "btn-primary" : "");
 
   return (
-    <div className="join w-full justify-center flex">
+    <div className="join justify-center flex">
       <button onClick={() => selectTool("BT")} className={`btn hover:btn-primary join-item ${selectedClasses("BT")}`}>
         BT
       </button>

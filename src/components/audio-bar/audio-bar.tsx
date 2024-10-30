@@ -23,7 +23,7 @@ export const AudioBar = () => {
   };
 
   return (
-    <div className="join w-full justify-center flex">
+    <div className="join justify-center flex">
       <button className="btn hover:btn-primary join-item" onClick={load}>
         Load
       </button>
